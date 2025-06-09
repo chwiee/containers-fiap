@@ -150,6 +150,7 @@ jobs:
         working-directory: ./app/deploy
 
       - name: Deploy App in Amazon ECS
+        if: env.DESTROY == 'true'
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
