@@ -42,8 +42,6 @@
         }
     ],
     "family": "ci-cd-app",
-    "taskRoleArn": "arn:aws:iam::090357256997:role/LabECS",
-    "executionRoleArn": "arn:aws:iam::090357256997:role/LabECS",
     "networkMode": "awsvpc",
     "volumes": [],
     "placementConstraints": [],
