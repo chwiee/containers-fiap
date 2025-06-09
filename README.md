@@ -9,3 +9,8 @@ print do término do trabalho:
 
 
 - Conta já excluida e recursos já destruidos
+
+Conforme as branchs cada uma cria os recursos conforme as necessidades 
+
+- Infra > Responsavel por criar o ECS e NLB
+- app-fix > Responsavel por fazer o deploy 
