@@ -127,18 +127,6 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Terraform | Set up statefile S3 Bucket for Backend
-        run: |
-            echo "terraform {
-              backend \"s3\" {
-                bucket   = "wb-aws-tf-state"
-                key      = "wb=tf=ecs.tfstate"
-                region   = "us-east-1"
-              }
-            }" >> provider.tf
-            cat provider.tf
-        working-directory: ./app/deploy
-
       - name: Terraform | Initialize backend
         run: terraform init
         working-directory: ./app/deploy
