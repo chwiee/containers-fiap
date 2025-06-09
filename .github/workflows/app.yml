@@ -7,7 +7,7 @@ on:
       - app*
 
 env:
-  DESTROY: false
+  DESTROY: true
   TF_VERSION: 1.10.5
   IMAGE_NAME: ${{ github.event.repository.name }}
   ECS_SERVICE: app-service
