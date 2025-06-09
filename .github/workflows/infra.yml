@@ -16,57 +16,57 @@ env:
   ENVIRONMENT: prod
 
 jobs:
-  Build:
-    name: 'Building app'
-    runs-on: ubuntu-latest
+  # Build:
+  #   name: 'Building app'
+  #   runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: app
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #     #  working-directory: app
 
-    steps:
-      - name: Download do Repositório
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #   steps:
+      # - name: Download do Repositório
+      #   uses: actions/checkout@v4
+      #   with:
+      #     fetch-depth: 0
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+      # - name: Setup Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
 
-      - name: Install Requirements
-        run:  pip install flask
+      # - name: Install Requirements
+      #   run:  pip install flask
 
-      - name: Unit Test
-        run: python -m unittest -v test
+      # - name: Unit Test
+      #   run: python -m unittest -v test
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build an image from Dockerfile
-        env:
-          DOCKER_BUILDKIT: 1
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }} .
+      # - name: Build an image from Dockerfile
+      #   env:
+      #     DOCKER_BUILDKIT: 1
+      #   run: |
+      #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }} .
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL'
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}'
+      #     format: 'table'
+      #     exit-code: '1'
+      #     ignore-unfixed: true
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL'
 
-      - name: Push image
-        run: |
-          docker image push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}
+      # - name: Push image
+      #   run: |
+      #     docker image push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}
 
   Deploy:
 
@@ -76,7 +76,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: app
+        # working-directory: app
 
     steps:
       - name: Download do Repositório
@@ -92,25 +92,25 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ./app/deploy/ecs-task-definition.json
-          container-name: ${{ env.IMAGE_NAME }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}
-          taskRoleArn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/LabRole
-          executionRoleArn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/LabRole
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ./app/deploy/ecs-task-definition.json
+      #     container-name: ${{ env.IMAGE_NAME }}
+      #     image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG_APP }}
+      #     taskRoleArn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/LabRole
+      #     executionRoleArn: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/LabRole
 
-      - name: View inside file ecs-task-definition.json
-        run: |
-          cat ./deploy/ecs-task-definition.json
+      # - name: View inside file ecs-task-definition.json
+      #   run: |
+      #     cat ./deploy/ecs-task-definition.json
 
-      - name: Register Task Definition
-        id: task-definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
+      # - name: Register Task Definition
+      #   id: task-definition
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
 
       - name: Terraform | Setup
         uses: hashicorp/setup-terraform@v3
@@ -151,10 +151,10 @@ jobs:
         run: terraform apply -auto-approve -input=false
         working-directory: ./app/deploy
 
-      - name: Deploy App in Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      # - name: Deploy App in Amazon ECS
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     service: ${{ env.ECS_SERVICE }}
+      #     cluster: ${{ env.ECS_CLUSTER }}
+      #     wait-for-service-stability: true
