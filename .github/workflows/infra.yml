@@ -76,7 +76,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        # working-directory: app
+        working-directory: infra
 
     steps:
       - name: Download do Repositório
